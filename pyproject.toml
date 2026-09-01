@@ -1,5 +1,5 @@
 [project]
-name = "shiny-pokemon"
+name = "shiny-hunt"
 version = "0.1.0"
 description = "Automated shiny Pokemon hunting"
 requires-python = ">=3.11"
@@ -9,4 +9,4 @@ dependencies = [
 ]
 
 [project.scripts]
-shiny-pokemon = "shiny_pokemon.main:main"
+shiny-hunt = "shiny_hunt.main:main"
