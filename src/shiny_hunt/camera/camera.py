@@ -25,3 +25,12 @@ class Camera:
         break
     self.camera.release()
     cv2.destroyAllWindows()
+
+  def load_calibration():
+    return
+
+  def save_calibration():
+    return
+
+  def get_game_frame():
+    return
