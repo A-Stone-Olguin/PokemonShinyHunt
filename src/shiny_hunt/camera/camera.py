@@ -112,7 +112,7 @@ class Camera:
       }
 
       with open(json_file, "w") as f:
-        json.dump(calibration, f, indent=4)
+        json.dump(calibration, f, indent=2)
 
       print("calibration saved!")
     return
