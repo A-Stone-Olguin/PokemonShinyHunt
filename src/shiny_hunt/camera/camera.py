@@ -9,6 +9,7 @@ class Camera:
     self.points = []
     self.width = 1920
     self.height = 1080
+    self.calibration_color = (0, 255, 0) # Green
     try: 
       self.camera = cv2.VideoCapture(0)
     except:
@@ -118,24 +119,24 @@ class Camera:
 
   def draw_selected_points(self, display):
     for i, (x, y) in enumerate(self.points):
-      cv2.circle(display, (x, y), 8, (0, 255, 0), -1)
+      cv2.circle(display, (x, y), 8, self.calibration_color, -1)
       cv2.putText(
         display,
         str(i+1),
         (x + 10, y -10),
         cv2.FONT_HERSHEY_SIMPLEX,
         0.8,
-        (0, 255, 0),
+        self.calibration_color,
         2,
       )
 
   def draw_lines(self, display):
     if len(self.points) >= 2:
       for i in range(len(self.points) - 1):
-        cv2.line(display, self.points[i], self.points[i + 1], (0, 255, 0), 2)
+        cv2.line(display, self.points[i], self.points[i + 1], self.calibration_color, 2)
 
     if len(self.points) == 4:
-      cv2.line(display, self.points[3], self.points[0], (0, 255, 0), 2)
+      cv2.line(display, self.points[3], self.points[0], self.calibration_color, 2)
 
   def get_game_frame(self):
       ret, frame = self.camera.read()
