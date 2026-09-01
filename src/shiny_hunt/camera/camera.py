@@ -7,8 +7,8 @@ class Camera:
   def __init__(self, frame_name, calibration_file):
     self.frame_name = frame_name
     self.points = []
-    self.width = 1920
-    self.height = 1080
+    self.width = 1080
+    self.height = 720
     self.calibration_color = (0, 255, 0) # Green
     try: 
       self.camera = cv2.VideoCapture(0)
