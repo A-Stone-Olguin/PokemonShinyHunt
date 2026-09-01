@@ -111,8 +111,9 @@ class Camera:
         "bottom_left": self.points[3],
       }
 
-      with open(json_file, "w") as f:
-        json.dump(calibration, f, indent=4)
+      # TODO: Might want a cleaner implementation of this later on (prompt if okay?)
+      # with open(json_file, "w") as f:
+      #   json.dump(calibration, f, indent=4)
 
       print("calibration saved!")
     return
