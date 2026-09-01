@@ -4,7 +4,7 @@ import numpy as np
 
 class Camera:
 
-  def __init__(self, frame_name):
+  def __init__(self, frame_name, calibration_file):
     self.frame_name = frame_name
     self.points = []
     try: 
@@ -14,11 +14,14 @@ class Camera:
       print(err_msg)
       raise Exception(err_msg)
 
+    self.load_calibration(calibration_file)
+    
+
   def open(self):
     while True:
-      ret, frame = self.camera.read()
+      frame = self.get_game_frame()
 
-      if not ret:
+      if frame is None:
         print("Could not read webcam")
         break
 
@@ -44,7 +47,23 @@ class Camera:
     self.top_right = d["top_right"]
 
     # TODO: Assert calibration values
-    
+
+    source = np.float32([
+      self.top_left,
+      self.top_right,
+      self.bottom_right,
+      self.bottom_left
+    ])
+    width = 1920
+    height = 1080
+
+    destination = np.float32([
+      [0, 0],
+      [width -1, 0],
+      [width-1, height-1],
+      [0, height -1],
+    ])
+    self.matrix = cv2.getPerspectiveTransform(source, destination)
     return
 
   def mouse_callback(self, event, x, y, flags, param):
@@ -123,23 +142,14 @@ class Camera:
       cv2.line(display, self.points[3], self.points[0], (0, 255, 0), 2)
 
   def get_game_frame(self):
-    # Cleans up into pixels (1920w x 1080 h)
-    source = np.float32([
-      self.top_left,
-      self.top_right,
-      self.bottom_right,
-      self.bottom_left
-    ])
-    width = 1920
-    height = 1080
+      ret, frame = self.camera.read()
 
-    destination = np.float32([
-      [0, 0],
-      [width -1, 0],
-      [width-1, height-1],
-      [0, height -1],
-    ])
+      if not ret:
+        print("Could not read webcam")
+        return
 
-    matrix = cv2.getPerspectiveTransform(source, destination)
-    
-    # return cv2.warpPerspective(frame, matrix, (width, height))
+      return cv2.warpPerspective(
+        frame,
+        self.matrix,
+        (1920, 1080),
+      )
