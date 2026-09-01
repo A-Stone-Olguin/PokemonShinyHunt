@@ -7,6 +7,8 @@ class Camera:
   def __init__(self, frame_name, calibration_file):
     self.frame_name = frame_name
     self.points = []
+    self.width = 1920
+    self.height = 1080
     try: 
       self.camera = cv2.VideoCapture(0)
     except:
@@ -41,27 +43,21 @@ class Camera:
       self.save_calibration(json_file)
       with open(json_file, "r") as f:
         d = json.load(f)
-    self.bottom_right = d["bottom_right"]
-    self.bottom_left = d["bottom_left"]
-    self.top_left = d["top_left"]
-    self.top_right = d["top_right"]
 
     # TODO: Assert calibration values
 
     source = np.float32([
-      self.top_left,
-      self.top_right,
-      self.bottom_right,
-      self.bottom_left
+      d["top_left"],
+      d["top_right"],
+      d["bottom_right"],
+      d["bottom_left"]
     ])
-    width = 1920
-    height = 1080
 
     destination = np.float32([
       [0, 0],
-      [width -1, 0],
-      [width-1, height-1],
-      [0, height -1],
+      [self.width -1, 0],
+      [self.width-1, self.height-1],
+      [0, self.height -1],
     ])
     self.matrix = cv2.getPerspectiveTransform(source, destination)
     return
@@ -151,5 +147,5 @@ class Camera:
       return cv2.warpPerspective(
         frame,
         self.matrix,
-        (1920, 1080),
+        (self.width, self.height),
       )
