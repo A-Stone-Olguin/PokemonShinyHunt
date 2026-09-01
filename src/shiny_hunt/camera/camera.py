@@ -1,5 +1,6 @@
 import cv2
 import json
+import numpy as np
 
 class Camera:
 
@@ -29,12 +30,18 @@ class Camera:
     cv2.destroyAllWindows()
 
   def load_calibration(self, json_file):
-    with open(json_file, "r") as f:
-      d = json.load(f)
-      self.bottom_right = d["bottom_right"]
-      self.bottom_left = d["bottom_left"]
-      self.top_left = d["top_left"]
-      self.top_right = d["top_right"]
+    try:
+      with open(json_file, "r") as f:
+        d = json.load(f)
+    except FileNotFoundError:
+      print("No calibration found. Prompting user to create")
+      self.save_calibration(json_file)
+      with open(json_file, "r") as f:
+        d = json.load(f)
+    self.bottom_right = d["bottom_right"]
+    self.bottom_left = d["bottom_left"]
+    self.top_left = d["top_left"]
+    self.top_right = d["top_right"]
 
     # TODO: Assert calibration values
     
@@ -47,13 +54,18 @@ class Camera:
         print(f"Point {len(self.points)}: ({x}, {y})")
 
   def save_calibration(self, json_file):
-    image = cv2.imread("calibration.png")
+    self.points.clear()
     window_name = "Calibration"
     cv2.namedWindow(window_name)
     cv2.setMouseCallback(window_name, self.mouse_callback)
 
     while True:
-      display = image.copy()
+      ret, frame = self.camera.read()
+      if not ret:
+          print("Failed to capture frame from camera")
+          break
+      display = frame.copy()
+
       self.draw_selected_points(display)
       self.draw_lines(display)
       cv2.imshow(window_name, display)
@@ -63,7 +75,7 @@ class Camera:
       if key == 13 and len(self.points) == 4:
         break
 
-      # R = reset
+      # R => reset
       if key == ord("r"):
         self.points.clear()
         print("points reset")
@@ -110,5 +122,24 @@ class Camera:
     if len(self.points) == 4:
       cv2.line(display, self.points[3], self.points[0], (0, 255, 0), 2)
 
-  def get_game_frame():
-    return
+  def get_game_frame(self):
+    # Cleans up into pixels (1920w x 1080 h)
+    source = np.float32([
+      self.top_left,
+      self.top_right,
+      self.bottom_right,
+      self.bottom_left
+    ])
+    width = 1920
+    height = 1080
+
+    destination = np.float32([
+      [0, 0],
+      [width -1, 0],
+      [width-1, height-1],
+      [0, height -1],
+    ])
+
+    matrix = cv2.getPerspectiveTransform(source, destination)
+    
+    # return cv2.warpPerspective(frame, matrix, (width, height))
