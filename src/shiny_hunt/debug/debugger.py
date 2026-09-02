@@ -39,6 +39,7 @@ class Debugger(QMainWindow):
 
     height, width, channels = frame.shape
     bytes_per_line = channels * width
+    self.camera_label.frame_size = (width, height)
     image = QImage(
       frame.data,
       width,

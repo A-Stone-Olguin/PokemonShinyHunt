@@ -10,6 +10,7 @@ class CameraView(QLabel):
     self.start_point = None
     self.end_point = None
     self.selecting = False
+    self.frame_size = None
 
     self.setMouseTracking(True)
 
