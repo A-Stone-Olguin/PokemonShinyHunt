@@ -16,6 +16,7 @@ from PySide6.QtCore import QTimer, Qt
 from PySide6.QtGui import QImage, QPixmap
 
 from shiny_hunt.camera.camera import Camera
+from shiny_hunt.debug.camera_view import CameraView
 
 class Debugger(QMainWindow):
   def __init__(self, camera: Camera):
@@ -61,7 +62,7 @@ class Debugger(QMainWindow):
     layout = QHBoxLayout(central_widget)
 
     # Camera
-    self.camera_label = QLabel("Camera")
+    self.camera_label = CameraView()
     self.camera_label.setMinimumSize(800, 600)
 
     # Sidebar
