@@ -25,6 +25,21 @@ class DetectorDebugger:
         break
 
       debug_frame = frame.copy()
+      status = (
+        f"Selected: {self.selected_region}"
+        if self.selected_region is not None
+        else "Selected: None"
+      )
+
+      cv2.putText(
+        debug_frame,
+        status,
+        (10, 25),
+        cv2.FONT_HERSHEY_SIMPLEX,
+        0.7,
+        (255, 255, 255),
+        2,
+      )
 
       if self.show_regions:
         self.regions.draw(debug_frame, selected=self.selected_region)
