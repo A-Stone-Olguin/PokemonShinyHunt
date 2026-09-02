@@ -40,3 +40,21 @@ class Region:
         self.color,
         2,
       )
+
+class RegionManager:
+  def __init__(self):
+    self.regions: dict[str, Region] = {}
+
+  def add(self, region: Region):
+    self.regions[region.name] = region
+
+  def get(self, name: str) -> Region | None:
+    try:
+      return self.regions[name]
+    except KeyError:
+      print("Region name not found")
+      return None
+
+  def draw(self, frame: np.ndarray):
+    for region in self.regions.values():
+      region.draw(frame)
