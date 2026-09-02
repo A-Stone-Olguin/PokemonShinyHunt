@@ -68,6 +68,13 @@ class DetectorDebugger:
           cv2.destroyWindow(self.region_window)
           self.region_window = None
         self.selected_region = None
+      elif key == ord("e"): # erase
+        if self.selected_region is not None:
+          self.regions.remove(self.selected_region)
+          if self.region_window is not None:
+            cv2.destroyWindow(self.region_window)
+            self.region_window = None
+          self.selected_region = None
     cv2.destroyAllWindows()
 
 

@@ -97,3 +97,7 @@ class RegionManager:
           **values,
         )
       )
+
+  def remove(self, name: str):
+    if name in self.regions:
+      del self.regions[name]
