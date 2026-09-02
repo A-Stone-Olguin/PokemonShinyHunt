@@ -30,7 +30,7 @@ class Region:
       (self.x, self.y),
       (self.x + self.width, self.y + self.height),
       self.color,
-      2,
+      thickness,
     )
 
     if label:
