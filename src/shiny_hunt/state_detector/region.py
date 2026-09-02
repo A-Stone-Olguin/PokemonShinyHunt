@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 import numpy as np
 import cv2
+import json
 
 @dataclass
 class Region:
@@ -42,6 +43,7 @@ class Region:
       )
 
 class RegionManager:
+  SAVED_PATH = "./src/config/regions.json"
   def __init__(self):
     self.regions: dict[str, Region] = {}
 
@@ -58,3 +60,28 @@ class RegionManager:
   def draw(self, frame: np.ndarray):
     for region in self.regions.values():
       region.draw(frame)
+
+  def save(self):
+    data = {
+      name: {
+        "x": region.x,
+        "y": region.y,
+        "width": region.width,
+        "height": region.height,
+      }
+      for name, region in self.regions.items()
+    }
+    with open(self.SAVED_PATH, "w") as f:
+      json.dump(data, f, indent=2)
+
+  def load(self):
+    with open(self.SAVED_PATH, "r") as f:
+      data = json.load(f)
+
+    for name, values in data.items():
+      self.add(
+        Region(
+          name=name,
+          **values,
+        )
+      )
