@@ -60,8 +60,18 @@ class RegionManager:
       return None
 
   def draw(self, frame: np.ndarray, selected: str | None = None):
-    for name, region in self.regions.items():
-      region.draw(frame, selected=(name == selected))
+    for i, region in enumerate(self.regions.values()):
+      region.draw(frame, selected=(region.name == selected))
+
+      cv2.putText(
+        frame,
+        str(i),
+        (region.x, region.y + region.height + 20),
+        cv2.FONT_HERSHEY_SIMPLEX,
+        0.6,
+        region.color,
+        2
+      )
 
   def save(self):
     data = {
