@@ -43,7 +43,7 @@ class Region:
       )
 
 class RegionManager:
-  SAVED_PATH = "./src/config/regions.json"
+  SAVED_PATH = "./config/regions.json"
   def __init__(self):
     self.regions: dict[str, Region] = {}
 
