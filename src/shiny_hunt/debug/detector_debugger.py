@@ -38,8 +38,10 @@ class DetectorDebugger:
         self.show_regions = not self.show_regions
       elif key == ord("s"):
         self.regions.save()
+        print("Regions saved")
       elif key == ord("l"):
         self.regions.load()
+        print("Regions loaded")
     cv2.destroyAllWindows()
 
 
