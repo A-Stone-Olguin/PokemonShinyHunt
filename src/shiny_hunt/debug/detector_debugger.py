@@ -10,6 +10,9 @@ class DetectorDebugger:
     self.camera = camera
     self.regions = RegionManager()
     self.show_regions = True
+    self.selected_region: str | None = None
+    self.selected_region: str | None = None
+    self.region_window: str | None = None
 
   def open(self):
     cv2.namedWindow(self.WINDOW_NAME)
@@ -27,6 +30,15 @@ class DetectorDebugger:
         self.regions.draw(debug_frame, selected=self.selected_region)
 
       cv2.imshow(self.WINDOW_NAME, debug_frame)
+      if self.selected_region is not None:
+        region = self.regions.get(self.selected_region)
+
+        if region is not None:
+          cv2.imshow(
+            self.region_window,
+            region.crop(frame),
+          )
+        
 
       key = cv2.waitKey(1) & 0xFF
 
@@ -42,6 +54,20 @@ class DetectorDebugger:
       elif key == ord("l"):
         self.regions.load()
         print("Regions loaded")
+      elif key in range(ord("0"), ord("9")):
+        index = key - ord("0")
+
+        if index < len(self.regions.regions):
+          if self.region_window is not None:
+            cv2.destroyWindow(self.region_window)
+
+          self.selected_region = list(self.regions.regions.keys())[index]
+          self.region_window = f"Region: {self.selected_region}"
+      elif key == ord("x"):
+        if self.region_window is not None:
+          cv2.destroyWindow(self.region_window)
+          self.region_window = None
+        self.selected_region = None
     cv2.destroyAllWindows()
 
 
