@@ -90,6 +90,26 @@ class DetectorDebugger:
             cv2.destroyWindow(self.region_window)
             self.region_window = None
           self.selected_region = None
+      elif key == ord("c"):
+        if self.selected_region is not None:
+          region = self.regions.get(self.selected_region)
+        if region is not None:
+          crop = region.crop(frame)
+
+          print(f"Region size: {crop.shape[1]}x{crop.shape[0]}")
+          average_color = crop.mean(axis=(0, 1))
+          print(f"Average BGR: {average_color.astype(int)}")
+
+          fname = f"./debug/{region.name}.png"
+          cv2.imwrite(
+            fname,
+            crop
+          )
+          print("Saved to", fname)
+      elif key == ord("f"):
+        fname = "./debug/full.png"
+        cv2.imwrite(fname)
+        print("Saved ", fname)
     cv2.destroyAllWindows()
 
 
