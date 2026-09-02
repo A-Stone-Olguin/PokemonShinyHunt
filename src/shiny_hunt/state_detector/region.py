@@ -9,7 +9,7 @@ class Region:
   y: int
   width: int
   height: int
-  color: tuple = tuple(0, 255, 0) #green
+  color: tuple = tuple([0, 255, 0]) #green
 
   def crop(self, frame: np.ndarray) -> np.ndarray:
     return frame[

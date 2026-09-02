@@ -5,7 +5,7 @@ class StateDetector:
 
   def detect(self):
     frame = self.camera.get_game_frame()
-    if frame == None:
+    if frame is None:
       print("failed to get frame")
       return
 
