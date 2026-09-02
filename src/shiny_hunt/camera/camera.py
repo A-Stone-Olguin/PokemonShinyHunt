@@ -139,14 +139,14 @@ class Camera:
       cv2.line(display, self.points[3], self.points[0], self.calibration_color, 2)
 
   def get_game_frame(self):
-      ret, frame = self.camera.read()
+    ret, frame = self.camera.read()
 
-      if not ret:
-        print("Could not read webcam")
-        return
+    if not ret:
+      print("Could not read webcam")
+      return
 
-      return cv2.warpPerspective(
-        frame,
-        self.matrix,
-        (self.width, self.height),
-      )
+    return cv2.warpPerspective(
+      frame,
+      self.matrix,
+      (self.width, self.height),
+    )
