@@ -22,7 +22,9 @@ class Region:
     self,
     frame: np.ndarray,
     label: bool = True,
+    selected: bool = False,
   ) -> None:
+    thickness = 3 if selected else 2
     cv2.rectangle(
       frame,
       (self.x, self.y),
@@ -39,7 +41,7 @@ class Region:
         cv2.FONT_HERSHEY_SIMPLEX,
         0.6,
         self.color,
-        2,
+        thickness,
       )
 
 class RegionManager:
@@ -57,9 +59,9 @@ class RegionManager:
       print("Region name not found")
       return None
 
-  def draw(self, frame: np.ndarray):
-    for region in self.regions.values():
-      region.draw(frame)
+  def draw(self, frame: np.ndarray, selected: str | None = None):
+    for name, region in self.regions.items():
+      region.draw(frame, selected=(name == selected))
 
   def save(self):
     data = {

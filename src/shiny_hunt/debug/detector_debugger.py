@@ -24,7 +24,7 @@ class DetectorDebugger:
       debug_frame = frame.copy()
 
       if self.show_regions:
-        self.regions.draw(debug_frame)
+        self.regions.draw(debug_frame, selected=self.selected_region)
 
       cv2.imshow(self.WINDOW_NAME, debug_frame)
 
