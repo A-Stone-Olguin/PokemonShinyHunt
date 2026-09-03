@@ -4,12 +4,6 @@ import cv2
 import json
 
 @dataclass
-class RegionResult:
-  available: bool
-  matches: bool
-  score: float | None = None
-
-@dataclass
 class Region:
   name: str
   x: int
@@ -17,6 +11,8 @@ class Region:
   width: int
   height: int
   color: tuple = tuple([0, 255, 0]) #green
+  threshold: int = 0.85
+  template: np.ndarray | None = None # The reference template
 
   def crop(self, frame: np.ndarray) -> np.ndarray:
     return frame[
@@ -50,8 +46,23 @@ class Region:
         thickness,
       )
 
-  def matches(self, frame: np.ndarray) -> RegionResult:
-    return
+  def add_template(self, template: np.ndarray):
+    self.template = template
+
+  def matches(self, frame: np.ndarray) -> bool:
+    if self.template is None:
+      return False
+
+    current = self.crop(frame)
+
+    result = cv2.matchTemplate(
+      current,
+      self.template,
+      cv2.TM_CCOEFF_NORMED,
+    )
+    score = result[0][0]
+    print("DEBUG:", "region", self.name, "score", score)
+    return score >= self.threshold
 
 class RegionManager:
   SAVED_PATH = "./config/regions.json"
@@ -112,4 +123,8 @@ class RegionManager:
       del self.regions[name]
 
   def detect(self, frame: np.ndarray):
-    return [region.detect(self, frame) for region in self.regions.values()]
+    return [region.matches(self, frame) for region in self.regions.values()]
+
+  def add_template(self, name: str, template: np.ndarray):
+    if name in self.regions:
+      self.regions[name].add_template(template)
