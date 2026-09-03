@@ -2,6 +2,7 @@ import cv2
 
 from shiny_hunt.camera.camera import Camera
 from shiny_hunt.region.region import Region, RegionManager
+from shiny_hunt.state_detector.state_detector import StateDetector
 
 class DetectorDebugger:
   WINDOW_NAME = "Pokemon shiny hunt - Debugger"
@@ -13,6 +14,9 @@ class DetectorDebugger:
     self.selected_region: str | None = None
     self.selected_region: str | None = None
     self.region_window: str | None = None
+
+    # Debug
+    self.state_detector = StateDetector(camera)
 
   def open(self):
     cv2.namedWindow(self.WINDOW_NAME)
@@ -53,6 +57,9 @@ class DetectorDebugger:
             self.region_window,
             region.crop(frame),
           )
+
+      state = self.state_detector.detect()
+      print("Current state", state)
         
 
       key = cv2.waitKey(1) & 0xFF
