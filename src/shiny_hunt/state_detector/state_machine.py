@@ -26,13 +26,12 @@ class StateMachine:
 
   def determine_state(self, observations: dict[str, bool]) -> GameState:
     print("Observations", observations)
-    if observations.get("profile", False) and observations.get("mystery_gift", False):
-      return GameState.PROFILE_SELECT
-
-    elif self.state == GameState.OVERWORLD:
+    if self.state != GameState.OVERWORLD:
+      if observations.get("profile", False) and observations.get("mystery_gift", False):
+        return GameState.PROFILE_SELECT
+    else:
       if observations.get("pokemon", False):
         return GameState.POKEMON
-
 
     return self.state
 
