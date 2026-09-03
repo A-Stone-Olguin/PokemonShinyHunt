@@ -100,6 +100,7 @@ class RegionManager:
         "y": region.y,
         "width": region.width,
         "height": region.height,
+        "template": region.template,
       }
       for name, region in self.regions.items()
     }
