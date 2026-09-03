@@ -25,6 +25,7 @@ class StateMachine:
     return self.state
 
   def determine_state(self, observations: dict[str, bool]) -> GameState:
+    print("Observations", observations)
     if observations.get("profile", False) and observations.get("mystery_gift", False):
       return GameState.PROFILE_SELECT
 

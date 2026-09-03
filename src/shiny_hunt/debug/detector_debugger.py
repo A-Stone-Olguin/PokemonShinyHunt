@@ -16,7 +16,7 @@ class DetectorDebugger:
     self.region_window: str | None = None
 
     # Debug
-    self.state_detector = StateDetector(camera)
+    self.state_detector = StateDetector(camera, self.regions)
 
   def open(self):
     cv2.namedWindow(self.WINDOW_NAME)

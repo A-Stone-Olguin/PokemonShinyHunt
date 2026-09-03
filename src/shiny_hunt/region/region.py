@@ -128,6 +128,7 @@ class RegionManager:
       del self.regions[name]
 
   def detect(self, frame: np.ndarray):
+    print("items", self.regions.items())
     return {name: region.matches(frame) for name, region in self.regions.items()}
 
   def add_template(self, name: str, template: np.ndarray):
