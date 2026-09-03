@@ -1,7 +1,7 @@
 import cv2
 
 from shiny_hunt.camera.camera import Camera
-from shiny_hunt.state_detector.region import Region, RegionManager
+from shiny_hunt.region.region import Region, RegionManager
 
 class DetectorDebugger:
   WINDOW_NAME = "Pokemon shiny hunt - Debugger"
