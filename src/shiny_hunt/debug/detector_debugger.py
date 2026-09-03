@@ -78,7 +78,7 @@ class DetectorDebugger:
 
           self.selected_region = list(self.regions.regions.keys())[index]
           self.region_window = f"Region: {self.selected_region}"
-      elif key == ord("x"):
+      elif key == ord("x"): #eXit selection
         if self.region_window is not None:
           cv2.destroyWindow(self.region_window)
           self.region_window = None
@@ -90,9 +90,10 @@ class DetectorDebugger:
             cv2.destroyWindow(self.region_window)
             self.region_window = None
           self.selected_region = None
-      elif key == ord("c"):
-        if self.selected_region is not None:
-          region = self.regions.get(self.selected_region)
+      elif key == ord("c"): # Crop and template
+        if self.selected_region is None:
+          continue
+        region = self.regions.get(self.selected_region)
         if region is not None:
           crop = region.crop(frame)
 
@@ -105,6 +106,7 @@ class DetectorDebugger:
             fname,
             crop
           )
+          self.regions.add_template(region.name, crop)
           print("Saved to", fname)
       elif key == ord("f"):
         fname = "./debug/full.png"

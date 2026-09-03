@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 import numpy as np
 import cv2
 import json
@@ -12,7 +12,7 @@ class Region:
   height: int
   color: tuple = tuple([0, 255, 0]) #green
   threshold: int = 0.85
-  template: np.ndarray | None = None # The reference template
+  template: np.ndarray | None = field(default=None, repr=False) # The reference template
 
   def crop(self, frame: np.ndarray) -> np.ndarray:
     return frame[
@@ -100,7 +100,6 @@ class RegionManager:
         "y": region.y,
         "width": region.width,
         "height": region.height,
-        "template": region.template,
       }
       for name, region in self.regions.items()
     }
@@ -112,9 +111,14 @@ class RegionManager:
       data = json.load(f)
 
     for name, values in data.items():
+      try:
+        template = cv2.imread(f"./debug/{name}.png", cv2.IMREAD_COLOR)
+      except:
+        template = None
       self.add(
         Region(
           name=name,
+          template=template,
           **values,
         )
       )
