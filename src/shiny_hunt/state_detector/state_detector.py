@@ -13,10 +13,6 @@ class StateDetector:
       print("failed to get frame")
       return
 
-    return self.detect_frame(frame)
-
-  def detect_frame(self, frame):
-    self.state_machine.determine_state(
+    return self.state_machine.run(
       self.region_manager.detect(frame)
     )
-    return
