@@ -4,6 +4,12 @@ import cv2
 import json
 
 @dataclass
+class RegionResult:
+  available: bool
+  matches: bool
+  score: float | None = None
+
+@dataclass
 class Region:
   name: str
   x: int
@@ -43,6 +49,9 @@ class Region:
         self.color,
         thickness,
       )
+
+  def matches(self, frame: np.ndarray) -> RegionResult:
+    return
 
 class RegionManager:
   SAVED_PATH = "./config/regions.json"
@@ -101,3 +110,6 @@ class RegionManager:
   def remove(self, name: str):
     if name in self.regions:
       del self.regions[name]
+
+  def detect(self, frame: np.ndarray):
+    return [region.detect(self, frame) for region in self.regions.values()]
