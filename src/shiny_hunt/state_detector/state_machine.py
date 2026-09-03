@@ -1,4 +1,5 @@
 from enum import Enum, auto
+import time
 
 class GameState(Enum):
   UNKNOWN = auto()
@@ -12,6 +13,7 @@ class GameState(Enum):
 class StateMachine:
   def __init__(self):
     self.state = GameState.UNKNOWN
+    self.last_action_time = 0
 
   def run(self, observations: dict[str, bool]):
     new_state = self.determine_state(observations)
@@ -35,21 +37,27 @@ class StateMachine:
     return self.state
 
   def run_state_action(self):
+    now = time.monotonic()
     if self.state == GameState.PROFILE_SELECT:
       ## PUSH A
+      print("PUSH A")
       self.state = GameState.OVERWORLD
       return
 
     if self.state == GameState.OVERWORLD:
       # Push up continuously
+      print("OVERWORLD: PUSH UP")
       return
 
     if self.state == GameState.RESETTING:
-      # Push A every half second
+      if now - self.last_action_time >= 0.5:
+        # Push A every half second
+        print("RESET: PUSH A")
+        self.last_action_time = now
       return
 
     if self.state == GameState.POKEMON:
-      # Determine if shiny over next few frames
+      # Determine if shiny over next few frames (via shiny detector)
       # if not shiny, transition to RESETTING
       # If shiny transition to SHINY_FOUND
       return
