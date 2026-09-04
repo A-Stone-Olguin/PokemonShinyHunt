@@ -17,6 +17,9 @@ const int STICK_PUSH_ANGLE = 45;
 const int A_REST_ANGLE = 90;
 const int A_PUSH_ANGLE = 45;
 
+bool aBusy = false;
+bool startBusy = false;
+
 
 void setup() {
   Serial.begin(115200);
@@ -72,21 +75,41 @@ void handleCommand(String command) {
 }
 
 void pressStart() {
+  if (startBusy) {
+    Serial.println("ERR PRESS_START_BUSY");
+    return;
+  }
+
+  startBusy = true;
   startServo.write(START_PUSH_ANGLE);
   delay(150);
   startServo.write(START_REST_ANGLE);
+  startBusy = false;
   Serial.println("OK PRESS_START");
 }
 
 void pressA() {
+  if (aBusy) {
+    Serial.println("ERR PRESS_A_BUSY");
+    return;
+  }
+
+  aBusy = true;
   aServo.write(A_PUSH_ANGLE);
   delay(150);
   aServo.write(A_REST_ANGLE);
+  aBusy = false;
   Serial.println("OK PRESS_A");
 }
 
 void stickUp() {
-  stickServo.write(STICK_PUSH_ANGLE);
+  int currentAngle = stickServo.read();
+  Serial.println(currentAngle);
+
+  for (int angle = currentAngle; angle >= STICK_PUSH_ANGLE; angle--) {
+    stickServo.write(angle);
+    delay(10);
+  }
 
   Serial.println("OK STICK_UP");
 }
