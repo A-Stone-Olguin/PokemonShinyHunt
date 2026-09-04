@@ -9,7 +9,7 @@ dependencies = [
     "future",
     "iso8601",
     "PyYAML",
-    "serial",
+    "pyserial",
 ]
 
 [project.scripts]
