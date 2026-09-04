@@ -7,6 +7,9 @@ class ArduinoController:
   def press(self, button: str):
     self.connector.send(f"PRESS_{button}")
 
+  def stick(self, direction: str):
+    self.connector.send(f"STICK_{direction}")
+
   def release(self, button: str):
     self.connector.send(f"RELEASE_{button}")
 
@@ -19,6 +22,13 @@ class ArduinoController:
   def press_start(self):
     self.press("START")
 
+  def stick_up(self):
+    self.stick("UP")
+
+  def stick_release(self):
+    self.stick("RELEASE")
+
+   #### FOR D-PAD
   def press_up(self):
     self.press("UP")
 
