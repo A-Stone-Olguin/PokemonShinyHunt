@@ -2,7 +2,7 @@
 
 Servo startServo;
 Servo stickServo;
-Servo AServo;
+Servo aServo;
 
 const int START_SERVO_PIN = 9;
 const int STICK_SERVO_PIN = 10;
@@ -34,7 +34,7 @@ void setup() {
 
 void loop() {
   if (Serial.available() > 0) {
-    String command = readStringUntil('\n');
+    String command = Serial.readStringUntil('\n');
     command.trim();
 
     handleCommand(command);
@@ -88,7 +88,7 @@ void pressA() {
 void stickUp() {
   stickServo.write(STICK_PUSH_ANGLE);
 
-  println("OK STICK_UP");
+  Serial.println("OK STICK_UP");
 }
 
 void stickRelease() {
