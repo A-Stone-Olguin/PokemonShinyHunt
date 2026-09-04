@@ -1,5 +1,6 @@
 from enum import Enum, auto
 import time
+from shiny_hunt.controllers.arduino import ArduinoController
 
 class GameState(Enum):
   UNKNOWN = auto()
@@ -11,9 +12,11 @@ class GameState(Enum):
 
 
 class StateMachine:
-  def __init__(self):
+  def __init__(self, controller: ArduinoController):
     self.state = GameState.UNKNOWN
+    self.controller = controller
     self.last_action_time = 0
+    self.overworld_set = 0
 
   def run(self, observations: dict[str, bool]):
     new_state = self.determine_state(observations)
@@ -30,7 +33,10 @@ class StateMachine:
       if observations.get("profile", False) and observations.get("mystery_gift", False):
         return GameState.PROFILE_SELECT
     else:
-      if observations.get("pokemon", False):
+      # If we match the pokemon, that means it is a duplicate.
+      # If we fail to match that means either false positive
+      # Or shiny detected.
+      if observations.get("pokemon", True):
         return GameState.POKEMON
 
     return self.state
@@ -38,25 +44,40 @@ class StateMachine:
   def run_state_action(self):
     now = time.monotonic()
     if self.state == GameState.PROFILE_SELECT:
-      ## PUSH A
-      print("PUSH A")
-      self.state = GameState.OVERWORLD
+      if now - self.last_action_time >= 0.5:
+        # Push A every half second
+        print("RESET: PUSH A")
+        self.controller.press_a()
+        self.last_action_time = now
       return
 
     if self.state == GameState.OVERWORLD:
-      # Push up continuously
-      print("OVERWORLD: PUSH UP")
+      if self.overworld_set == 0:
+        self.overworld_set = now
+      self.controller.stick_up()
       return
 
     if self.state == GameState.RESETTING:
       if now - self.last_action_time >= 0.5:
         # Push A every half second
-        print("RESET: PUSH A")
+        print("RESET: PUSH A, RELEASE")
+        self.controller.stick_release()
+        self.controller.press_a()
         self.last_action_time = now
       return
 
     if self.state == GameState.POKEMON:
-      # Determine if shiny over next few frames (via shiny detector)
-      # if not shiny, transition to RESETTING
-      # If shiny transition to SHINY_FOUND
+      # If no match found after 50 seconds, we are done
+      if now - self.overworld_set >= 50:
+        self.state == GameState.SHINY_FOUND
+        print("FOUND SHINY!!!!")
+        return
+
+      # If we match
+      if now - self.last_action_time >= 0.5:
+        print("FOUND MATCH, RESETTING")
+        self.overworld_set = 0
+        self.controller.press_start()
+        self.last_action_time = now
+        self.state == GameState.RESETTING
       return
