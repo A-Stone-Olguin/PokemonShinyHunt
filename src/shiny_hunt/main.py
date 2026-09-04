@@ -10,10 +10,18 @@ def main():
   # debugger = DetectorDebugger(camera)
   # debugger.open()
   arduino = ArduinoController(ArduinoConnector("/dev/ttyACM0"))
+  flip = True
   while True:
     arduino.press_start()
-    time.sleep(1)
-    arduino.ping()
+    time.sleep(.5)
+    arduino.press_a()
+    time.sleep(.5)
+    if flip:
+      arduino.stick_up()
+    else:
+      arduino.stick_release()
+    flip = not flip
+    
 
 
 if __name__ == "__main__":
