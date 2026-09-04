@@ -3,6 +3,7 @@ import cv2
 from shiny_hunt.camera.camera import Camera
 from shiny_hunt.region.region import Region, RegionManager
 from shiny_hunt.state_detector.state_detector import StateDetector
+from shiny_hunt.state_detector.state_machine import GameState
 
 class DetectorDebugger:
   WINDOW_NAME = "Pokemon shiny hunt - Debugger"
@@ -20,7 +21,8 @@ class DetectorDebugger:
 
   def open(self):
     cv2.namedWindow(self.WINDOW_NAME)
-
+    resetCounts = 0
+    prevState = GameState.UNKNOWN
     while True:
       frame = self.camera.get_game_frame()
 
@@ -60,6 +62,11 @@ class DetectorDebugger:
 
       state = self.state_detector.detect()
       print("Current state", state)
+      if state == GameState.RESETTING and state != prevState:
+        resetCounts+=1
+      elif state == GameState.SHINY_FOUND:
+        print(f"found shiny after {resetCounts} resets")
+        return
         
 
       key = cv2.waitKey(1) & 0xFF
