@@ -70,3 +70,29 @@ void handleCommand(String command) {
   Serial.print("ERROR UNKOWN COMMAND ");
   Serial.println(command);
 }
+
+void pressStart() {
+  startServo.write(START_PUSH_ANGLE);
+  delay(150);
+  startServo.write(START_REST_ANGLE);
+  Serial.println("OK PRESS_START");
+}
+
+void pressA() {
+  aServo.write(A_PUSH_ANGLE);
+  delay(150);
+  aServo.write(A_REST_ANGLE);
+  Serial.println("OK PRESS_A");
+}
+
+void stickUp() {
+  stickServo.write(STICK_PUSH_ANGLE);
+
+  println("OK STICK_UP");
+}
+
+void stickRelease() {
+  stickServo.write(STICK_REST_ANGLE);
+
+  Serial.println("OK STICK_RELEASE");
+}
